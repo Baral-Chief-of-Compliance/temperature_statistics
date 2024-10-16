@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block head %}
+    <link rel="stylesheet" href={% static 'temperature_statistics_app/card.css' %}></link>
+{% endblock %}
+
+{% block title %}
+Добавить город
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="d-flex justify-content-center h-100">
+
+            {% comment %} карта добавления города {% endcomment %}
+            <div class="card">
+
+                <div class="card-header">
+                    <h3 class="text-center">Добавить город</h3>
+                </div>
+
+                <div class="card-body">
+
+                    <form method="post">{% csrf_token %}
+
+                        {% comment %} input для названия города {% endcomment %}
+                        <div class="input-group form-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-success border-success"><i class="fa-solid fa-city text-white"></i></span>
+                            </div>
+                            {{ form.t_name }}
+                        </div>
+
+                        <div class="form-group">
+                            <input type="submit" value="Добавить город" class="btn btn-success btn-lg btn-block"> 
+                        </div>
+
+                        <div class="form-group">
+                            <a href="{% url 'tmp_stat_app:index' %}" role="button" class="btn btn-secondary btn-lg btn-block">Назад к списку городов</a>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}

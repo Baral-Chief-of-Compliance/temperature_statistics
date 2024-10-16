@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Температура города - {{ town }} за {{ date }}
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="container mt-5">
+        <a href="{% url 'tmp_stat_app:detail_town' town.pk %}" role="button" class="btn btn-secondary mb-3 text-white">
+            <i class="fa-solid fa-chevron-left"></i>
+            <span>Назад к городу {{town}}</span>
+        </a>
+        <h1 class="text-center">Температура города {{ town }} за {{date}}</h1>
+
+
+        {% if temperatures %}
+            <canvas id="myChart"></canvas>
+
+        {% else %}  
+            <h3 class="text-center text-secondary font-italic">Данных о температуре за {{ date }} нету</h3>
+        {% endif %}
+
+    </div>
+
+{% endblock %}
+
+{% block script %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('myChart');
+      
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: 
+            [{% for t in temperatures%}'{{t.tmp_date}}',{% endfor %}],
+            datasets: [{
+              label: 'Температура в городе {{town}} за {{date}}',
+              data: [{% for t in temperatures%}{{t.tmp_value}}, {% endfor %}],
+              borderWidth: 1,
+              pointStyle: 'circle',
+              pointRadius: 5,
+              pointHoverRadius: 10,
+              pointBackgroundColor: 'red'
+            }]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
+          }
+        });
+    </script>
+
+    {% comment %} скрипт, для взаимодействия с видимостью графика  {% endcomment %}
+    <script>
+        var chart = document.getElementById('myChart');
+        var show_btn = document.getElementById('btn-visible-charts'); 
+        var hide_btn = document.getElementById('btn-hide-charts'); 
+
+        show_btn.onclick = function(){
+            show_btn.setAttribute('hidden', 'hidden')
+            chart.removeAttribute('hidden')
+            hide_btn.removeAttribute('hidden')
+        }
+
+        hide_btn.onclick = function(){
+            hide_btn.setAttribute('hidden', 'hidden')
+            chart.setAttribute('hidden', 'hidden')
+            show_btn.removeAttribute('hidden')
+        }
+        
+    </script>
+
+{% endblock %}

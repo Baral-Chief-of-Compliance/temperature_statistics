@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}Города{% endblock%}
+
+
+    {% block content %}
+    <div class="container mt-5">
+
+        <h1 class="text-center">Список городов</h1>
+
+        <a href="{% url 'tmp_stat_app:add_town' %}" role="button" class="btn btn-success btn-lg btn-block my-5 text-white">
+            <i class="fa-solid fa-square-plus"></i>
+            <span>Добавить город</span>
+        </a>
+
+        {% if town_list %}
+            {% comment %} Таблица с городами пользователя {% endcomment %}
+            <div class="table-responsive-sm">
+                <table class="table table-hover text-center table-sm">
+                    <thead>
+                        <tr>
+                            <th scope="col">Город</th>
+                            <th scope="col">Температура</th>
+                            <th scope="col">Редактирование</th>
+                            <th scope="col">Удаление</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for t in town_list %}
+                        <tr>
+                            <td class="font-weight-bold">{{ t }}</td> 
+                            <td>
+                                {% comment %} кнопка для перехода в город к его температурам {% endcomment %}
+                                <a href="{% url 'tmp_stat_app:detail_town' t.pk %}"  role="button" class="btn btn-primary text-white">
+                                    <div class="container">
+                                        <div class="row">
+                                            <i class="fa-solid fa-temperature-three-quarters col mt-1"></i>
+                                            <span class="d-none d-lg-block d-xl-block col">Температура</span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </td>
+
+                            <td>
+                                {% comment %} кнопка редактирования города {% endcomment %}
+                                <a href="{% url 'tmp_stat_app:update_town' t.pk %}" role="button" class="btn btn-warning text-white">
+                                    <div class="container">
+                                        <div class="row">
+                                            <i class="fa-solid fa-pen-to-square col mt-1"></i>
+                                            <span class="d-none d-lg-block d-xl-block col">Редактировать</span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </td>
+
+                            <td>
+                                {% comment %} кнопка для удаления города {% endcomment %}
+                                <a href="{% url 'tmp_stat_app:delete_town' t.pk %}" role="button" class="btn btn-danger text-white">
+                                    <div class="container">
+                                        <div class="row">
+                                            <i class="fa-solid fa-trash col mt-1"></i>
+                                            <span class="d-none d-lg-block d-xl-block col">Удалить</span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <h3 class="text-center text-secondary font-italic">Городов пока нет...</h3>
+        {% endif %}
+    </div>
+    {% endblock %}

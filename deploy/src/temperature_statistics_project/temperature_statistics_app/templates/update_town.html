@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %}
+Редактировать {{town}}
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href={% static 'temperature_statistics_app/card.css' %}></link>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-center h-100">
+
+        {% comment %} карта удаления города {% endcomment %}
+        <div class="card">
+
+            <div class="card-header">
+                <h3 class="text-center">Редактировать город</h3>
+                <h4 class="text-center text-warning">{{town}}</h4>
+            </div>
+
+            <div class="card-body">
+
+                <form method="post">{% csrf_token %}
+                    
+                    <p>Вы точно хотите редактировать город <span class="text-warning">"{{ town }}"</span>?</p>
+
+                    {% comment %} input для редактирование названия города {% endcomment %}
+                    <div class="input-group form-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text bg-warning border-success"><i class="fa-solid fa-city text-white"></i></span>
+                        </div>
+                        {{ form.t_name }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <input type="submit" value="Да" class="btn btn-warning btn-lg btn-block"> 
+                    </div>
+
+                    <div class="form-group">
+                        <a href="{% url 'tmp_stat_app:index' %}" role="button" class="btn btn-secondary btn-lg btn-block">Нет</a>
+                    </div>
+                </form>
+            
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

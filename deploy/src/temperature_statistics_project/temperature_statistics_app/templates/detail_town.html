@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Температура города - {{ town }}
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="container mt-5">
+        <a href="{% url 'tmp_stat_app:index' %}" role="button" class="btn btn-secondary mb-3 text-white">
+            <i class="fa-solid fa-chevron-left"></i>
+            <span>Назад к списку городов</span>
+        </a>
+        <h1 class="text-center">Температура города {{ town }}</h1>
+
+        <a href="{% url 'tmp_stat_app:add_temperature' town.pk %}" role="button" class="btn btn-success btn-lg btn-block mt-5 text-white">
+            <i class="fa-solid fa-square-plus"></i>
+            <span>Добавить температуру</span>
+        </a>
+
+    {% if temperatures %}
+
+        <a href={% url 'tmp_stat_app:set_tmp_date' town.pk %} type="button" class="btn btn-info btn-lg btn-block text-white">
+            <i class="fa-solid fa-chart-line"></i>
+            <i class="fa-regular fa-calendar-days"></i>
+            <span>Темепература за определенную дату</span>
+        </a>
+
+        <button id="btn-visible-charts" type="button" class="btn btn-primary btn-lg btn-block mb-5 text-white">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Показать график температуры</span>
+        </button>
+
+        <button id="btn-hide-charts" hidden="hidden" type="button" class="btn btn-secondary btn-lg btn-block mb-5 text-white">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Убрать график температуры</span>
+        </button>
+
+
+        <canvas hidden="hidden" id="myChart"></canvas>
+        {% comment %} таблица с температурами города  {% endcomment %}
+        <div class="table-responsive-sm">
+            <table class="table table-hover text-center table-sm">
+                <thead>
+                    <tr>
+                        <th scope="col">Значение температуры</th>
+                        <th scope="col">Дата и время</th>
+                        <th scope="col">Редактирование</th>
+                        <th scope="col">Удаление</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for t in temperatures%}
+                    <tr>
+                        <td class="font-weight-bold">{{t.tmp_value}}</td>
+                        <td>{{t.tmp_date}}</td>
+                    
+                        <td>
+                            {% comment %} кнопка редактирования {% endcomment %}
+                            <a href="{% url 'tmp_stat_app:update_temperature' town.pk t.pk  %}" role="button" class="btn btn-warning text-white">
+                                <div class="container">
+                                    <div class="row">
+                                        <i class="fa-solid fa-pen-to-square col mt-1"></i>
+                                        <span class="d-none d-lg-block d-xl-block col">Редактировать</span>
+                                    </div>
+                                </div>  
+                            </a>
+                        </td>
+
+                        <td>
+                            {% comment %} кнопка удаления {% endcomment %}
+                            <a href="{% url 'tmp_stat_app:delete_temperature' town.pk t.pk  %}" role="button" class="btn btn-danger text-white">
+                                <div class="container">
+                                    <div class="row">
+                                        <i class="fa-solid fa-trash col mt-1"></i>
+                                        <span class="d-none d-lg-block d-xl-block col">Удалить</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+
+            </table>
+        </div>
+    {% else %}  
+        <h3 class="text-center text-secondary font-italic">Данных о температуре нет...</h3>
+    {% endif %}
+
+    </div>
+
+{% endblock %}
+
+{% block script %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('myChart');
+      
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: 
+            [{% for t in temperatures_for_chart%}'{{t.tmp_date}}',{% endfor %}],
+            datasets: [{
+              label: 'Температура в городе {{town}}',
+              data: [{% for t in temperatures_for_chart%}{{t.tmp_value}}, {% endfor %}],
+              borderWidth: 1,
+              pointStyle: 'circle',
+              pointRadius: 5,
+              pointHoverRadius: 10,
+              pointBackgroundColor: 'red'
+            }]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
+          }
+        });
+    </script>
+
+    {% comment %} скрипт, для взаимодействия с видимостью графика  {% endcomment %}
+    <script>
+        var chart = document.getElementById('myChart');
+        var show_btn = document.getElementById('btn-visible-charts'); 
+        var hide_btn = document.getElementById('btn-hide-charts'); 
+
+        show_btn.onclick = function(){
+            show_btn.setAttribute('hidden', 'hidden')
+            chart.removeAttribute('hidden')
+            hide_btn.removeAttribute('hidden')
+        }
+
+        hide_btn.onclick = function(){
+            hide_btn.setAttribute('hidden', 'hidden')
+            chart.setAttribute('hidden', 'hidden')
+            show_btn.removeAttribute('hidden')
+        }
+        
+    </script>
+
+{% endblock %}

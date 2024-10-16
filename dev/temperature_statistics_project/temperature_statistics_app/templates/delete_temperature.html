@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %}
+    Удалить температуру города {{town}}
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href={% static 'temperature_statistics_app/card.css' %}></link>
+{% endblock %}
+
+
+{% block content %}
+    <div class="container">
+        <div class="d-flex justify-content-center h-100">
+
+            {% comment %} карта удаления города {% endcomment %}
+            <div class="card">
+
+                <div class="card-header">
+                    <h3 class="text-center">Удалить температуру</h3>
+                    <h4 class="text-center">города {{town}}</h4>
+                </div>
+
+                <div class="card-body">
+
+                    <form method="post">{% csrf_token %}
+                        
+                        <p>Вы точно хотите удалить температуру <span class="text-danger">"{{ temperature.tmp_value }} за {{ temperature.tmp_date }}"</span>?</p>
+                        
+
+                        <div class="form-group">
+                            <input type="submit" value="Да" class="btn btn-danger btn-lg btn-block"> 
+                        </div>
+
+                        <div class="form-group">
+                            <a href="{% url 'tmp_stat_app:detail_town' town.pk %}" role="button" class="btn btn-secondary btn-lg btn-block">Нет</a>
+                        </div>
+                    </form>
+                
+                </div>
+            </div>
+        </div>
+    
+    </div>
+{% endblock %}

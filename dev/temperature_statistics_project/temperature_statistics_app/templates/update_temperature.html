@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %}
+Редактировать температуру {{town}}
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href={% static 'temperature_statistics_app/card.css' %}></link>
+{% endblock %}
+
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-center h-100">
+
+        {% comment %} карта удаления города {% endcomment %}
+        <div class="card">
+
+            <div class="card-header">
+                <h3 class="text-center">Редактировать температуру</h3>
+                <h4 class="text-center">города {{town}}</h4>
+            </div>
+
+            <div class="card-body">
+
+                <form method="post">{% csrf_token %}
+                    
+                    <p>Вы точно хотите редактировать температуру <span class="text-warning">"{{ temperature.tmp_value }} за {{ temperature.tmp_date }}"</span>?</p>
+
+                    {% comment %} input для даты {% endcomment %}
+                    <div class="input-group form-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text bg-warning border-warning"><i class="fa-regular fa-calendar-days text-white"></i></span>
+                        </div>
+                            {{ form.tmp_date }}
+                    </div>
+
+                    {% comment %} input для значения температуры {% endcomment %}
+                    <div class="input-group form-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text bg-warning border-warning"><i class="fa-solid fa-temperature-three-quarters text-white"></i></span>
+                        </div>
+                            {{ form.tmp_value }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <input type="submit" value="Да" class="btn btn-warning btn-lg btn-block"> 
+                    </div>
+
+                    <div class="form-group">
+                        <a href="{% url 'tmp_stat_app:detail_town' town.pk %}" role="button" class="btn btn-secondary btn-lg btn-block">Нет</a>
+                    </div>
+                </form>
+            
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+
+{% block script %}
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/flatpickr.min.js"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/ru.js"></script>
+
+    <script>
+        var optional_config = {
+            altInput: true,
+            enableTime: true,
+            altFormat: "d.m.Y H:i:S",
+            dateFormat: "d.m.Y H:i:S",
+            minTime: "00:00",
+            maxTime: "23:59",
+            locale: "ru" 
+        }
+
+        $("#date-time-picker").flatpickr(optional_config);
+    </script>
+{% endblock %}
